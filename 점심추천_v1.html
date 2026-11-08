@@ -5,205 +5,63 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>오늘 뭐 먹지? - 점심 메뉴 추천</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
+    * { box-sizing: border-box; }
     body {
-      margin: 0;
-      min-height: 100vh;
-      padding: 32px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #f7f5f0;
-      color: #292820;
-      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
-        "Malgun Gothic", sans-serif;
+      margin: 0; min-height: 100vh; padding: 24px 16px;
+      display: flex; align-items: center; justify-content: center;
+      background: #f7f5f0; color: #292820;
+      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
     }
-
-    .app {
-      width: 100%;
-      max-width: 560px;
-      text-align: center;
-    }
-
-    .eyebrow {
-      margin: 0 0 10px;
-      color: #d97736;
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 2px;
-    }
-
-    h1 {
-      margin: 0;
-      font-size: clamp(28px, 7vw, 38px);
-      font-weight: 800;
-      letter-spacing: -1.5px;
-    }
-
-    .subtitle {
-      margin: 12px 0 30px;
-      color: #858176;
-      font-size: 15px;
-      line-height: 1.6;
-    }
-
+    .app { width: 100%; max-width: 560px; text-align: center; }
+    .eyebrow { margin: 0 0 6px; color: #d97736; font-size: 13px; font-weight: 700; letter-spacing: 2px; }
+    h1 { margin: 0; font-size: clamp(26px, 6vw, 36px); font-weight: 800; letter-spacing: -1.5px; }
+    .subtitle { margin: 8px 0 16px; color: #858176; font-size: 14px; line-height: 1.5; }
     .category-list {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 9px;
-      margin-bottom: 22px;
+      display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-bottom: 18px;
     }
-
     .category-button {
-      min-width: 0;
-      padding: 12px 5px;
-      border: 1px solid #e7e2d8;
-      border-radius: 13px;
-      background: #fff;
-      color: #69665e;
-      font: inherit;
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background 0.2s, color 0.2s, border-color 0.2s;
+      min-width: 0; padding: 11px 4px; border: 1px solid #e7e2d8; border-radius: 12px;
+      background: #fff; color: #69665e; font: inherit; font-size: 14px; font-weight: 700;
+      cursor: pointer; transition: background 0.2s, color 0.2s, border-color 0.2s;
     }
-
-    .category-button:hover {
-      border-color: #e7a36f;
-    }
-
-    .category-button.active {
-      border-color: #d97736;
-      background: #d97736;
-      color: #fff;
-    }
-
+    .category-button:hover { border-color: #e7a36f; }
+    .category-button.active { border-color: #d97736; background: #d97736; color: #fff; }
     .menu-card {
-      min-height: 270px;
-      padding: 34px 20px 30px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      border: 1px solid #eee8dd;
-      border-radius: 24px;
-      background: #fff;
-      box-shadow: 0 12px 35px rgba(69, 54, 30, 0.07);
+      min-height: 250px; padding: 28px 16px 24px; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; border: 1px solid #eee8dd;
+      border-radius: 20px; background: #fff; box-shadow: 0 10px 30px rgba(69, 54, 30, 0.06);
     }
-
-    .menu-emoji {
-      margin-bottom: 14px;
-      font-size: 66px;
-      line-height: 1.2;
-    }
-
-    .menu-category {
-      margin-bottom: 8px;
-      color: #d97736;
-      font-size: 13px;
-      font-weight: 700;
-    }
-
-    .menu-name {
-      margin: 0;
-      font-size: clamp(27px, 7vw, 34px);
-      font-weight: 800;
-      letter-spacing: -1px;
-      word-break: keep-all;
-    }
-
-    .menu-description {
-      min-height: 24px;
-      margin: 13px 0 0;
-      color: #77736a;
-      font-size: 14px;
-      line-height: 1.6;
-      word-break: keep-all;
-    }
-
+    .menu-emoji { margin-bottom: 12px; font-size: 58px; line-height: 1.2; }
+    .menu-category { margin-bottom: 6px; color: #d97736; font-size: 13px; font-weight: 700; }
+    .menu-name { margin: 0; font-size: clamp(24px, 6vw, 32px); font-weight: 800; letter-spacing: -1px; word-break: keep-all; }
+    .menu-description { min-height: 22px; margin: 10px 0 0; color: #77736a; font-size: 14px; line-height: 1.5; word-break: keep-all; }
     .draw-button {
-      width: 100%;
-      margin-top: 22px;
-      padding: 17px 20px;
-      border: 0;
-      border-radius: 15px;
-      background: #292820;
-      color: #fff;
-      font: inherit;
-      font-size: 17px;
-      font-weight: 800;
-      cursor: pointer;
-      transition: background 0.2s, transform 0.2s;
+      width: 100%; margin-top: 18px; padding: 16px 20px; border: 0; border-radius: 14px;
+      background: #292820; color: #fff; font: inherit; font-size: 16px; font-weight: 800;
+      cursor: pointer; transition: background 0.2s, transform 0.2s;
     }
-
-    .draw-button:hover {
-      background: #454236;
-      transform: translateY(-2px);
-    }
-
-    .draw-button:active {
-      transform: translateY(0);
-    }
-
-    .draw-button:disabled {
-      cursor: default;
-      opacity: 0.75;
-      transform: none;
-    }
-
-    .menu-card.rolling .menu-emoji {
-      animation: bounce 0.16s ease-in-out infinite alternate;
-    }
-
-    .menu-card.rolling .menu-name {
-      animation: fade 0.16s ease-in-out infinite alternate;
-    }
-
+    .draw-button:hover { background: #454236; transform: translateY(-2px); }
+    .draw-button:active { transform: translateY(0); }
+    .draw-button:disabled { cursor: default; opacity: 0.75; transform: none; }
+    .menu-card.rolling .menu-emoji { animation: bounce 0.16s ease-in-out infinite alternate; }
+    .menu-card.rolling .menu-name { animation: fade 0.16s ease-in-out infinite alternate; }
     @keyframes bounce {
       from { transform: translateY(0) rotate(-4deg); }
-      to { transform: translateY(-7px) rotate(4deg); }
+      to { transform: translateY(-6px) rotate(4deg); }
     }
-
     @keyframes fade {
       from { opacity: 0.55; }
       to { opacity: 1; }
     }
-
     @media (max-width: 420px) {
-      body {
-        padding: 24px 14px;
-      }
-
-      .subtitle {
-        margin-bottom: 24px;
-        font-size: 14px;
-      }
-
-      .category-list {
-        gap: 7px;
-      }
-
-      .category-button {
-        padding: 11px 3px;
-        font-size: 13px;
-      }
-
-      .menu-card {
-        min-height: 250px;
-        padding: 28px 14px;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      *,
-      *::before,
-      *::after {
-        animation-duration: 0.01ms !important;
-        transition-duration: 0.01ms !important;
-      }
+      body { padding: 16px 12px; }
+      .eyebrow { margin-bottom: 4px; font-size: 12px; }
+      .subtitle { margin-top: 6px; margin-bottom: 12px; font-size: 13px; }
+      .category-list { gap: 6px; margin-bottom: 14px; }
+      .category-button { padding: 10px 2px; font-size: 13px; border-radius: 10px; }
+      .menu-card { min-height: 220px; padding: 20px 12px; }
+      .menu-emoji { font-size: 50px; margin-bottom: 8px; }
+      .draw-button { margin-top: 14px; padding: 14px; font-size: 15px; }
     }
   </style>
 </head>
@@ -211,7 +69,7 @@
   <main class="app">
     <p class="eyebrow">LUNCH TIME</p>
     <h1>오늘의 점심 추천 🍽️</h1>
-    <p class="subtitle">오늘 점심은 뭘 먹을까?<br>버튼을 눌러 메뉴를 골라보세요!</p>
+    <p class="subtitle">카테고리를 여러 개 눌러 조합해 보세요.<br>선택된 카테고리를 다시 누르면 취소됩니다.</p>
 
     <section class="category-list" aria-label="메뉴 카테고리">
       <button class="category-button" type="button" data-category="한식">한식</button>
@@ -222,9 +80,9 @@
 
     <section class="menu-card" id="menuCard" aria-live="polite">
       <div class="menu-emoji" id="menuEmoji">🍽️</div>
-      <div class="menu-category" id="menuCategory">오늘의 추천 메뉴</div>
+      <div class="menu-category" id="menuCategory">전체 추천 모드</div>
       <h2 class="menu-name" id="menuName">메뉴를 뽑아보세요!</h2>
-      <p class="menu-description" id="menuDescription">어떤 메뉴가 나올지 기대해 보세요.</p>
+      <p class="menu-description" id="menuDescription">카테고리를 고르거나 바로 뽑기 버튼을 누르세요.</p>
     </section>
 
     <button class="draw-button" id="drawButton" type="button">메뉴 뽑기!</button>
@@ -232,54 +90,22 @@
 
   <script>
     const menus = [
-      {
-        name: "김치찌개",
-        category: "한식",
-        emoji: "🍲",
-        description: "비 오는 날엔 얼큰한 김치찌개!"
-      },
-      {
-        name: "제육볶음",
-        category: "한식",
-        emoji: "🥘",
-        description: "매콤달콤한 양념으로 든든하게!"
-      },
-      {
-        name: "짜장면",
-        category: "중식",
-        emoji: "🍜",
-        description: "달콤한 짜장 소스에 면을 비벼 한입!"
-      },
-      {
-        name: "짬뽕",
-        category: "중식",
-        emoji: "🍜",
-        description: "얼큰하고 시원한 국물이 당기는 날!"
-      },
-      {
-        name: "돈가스",
-        category: "일식",
-        emoji: "🍱",
-        description: "바삭하게 튀긴 돈가스로 든든한 한 끼!"
-      },
-      {
-        name: "라멘",
-        category: "일식",
-        emoji: "🍥",
-        description: "진한 국물과 쫄깃한 면발의 조화!"
-      },
-      {
-        name: "파스타",
-        category: "양식",
-        emoji: "🍝",
-        description: "기분 전환이 필요할 땐 맛있는 파스타!"
-      },
-      {
-        name: "햄버거",
-        category: "양식",
-        emoji: "🍔",
-        description: "간편하면서도 맛있게 즐기는 한 끼!"
-      }
+      { name: "김치찌개", category: "한식", emoji: "🍲", description: "비 오는 날엔 얼큰한 김치찌개!" },
+      { name: "제육볶음", category: "한식", emoji: "🥘", description: "매콤달콤한 양념으로 든든하게!" },
+      { name: "된장찌개", category: "한식", emoji: "🥣", description: "구수하고 깊은 맛의 된장찌개!" },
+      { name: "비빔밥", category: "한식", emoji: "🥗", description: "신선한 나물과 고추장의 완벽 조화!" },
+      { name: "짜장면", category: "중식", emoji: "🥢", description: "달콤한 짜장 소스에 면을 비벼 한입!" },
+      { name: "짬뽕", category: "중식", emoji: "🍜", description: "얼큰하고 시원한 국물이 당기는 날!" },
+      { name: "볶음밥", category: "중식", emoji: "🍚", description: "고슬고슬 볶아낸 고소한 볶음밥!" },
+      { name: "마파두부", category: "중식", emoji: "🍛", description: "매콤알싸한 소스가 매력적인 마파두부!" },
+      { name: "돈가스", category: "일식", emoji: "🍱", description: "바삭하게 튀긴 돈가스로 든든한 한 끼!" },
+      { name: "라멘", category: "일식", emoji: "🍥", description: "진한 국물과 쫄깃한 면발의 조화!" },
+      { name: "초밥", category: "일식", emoji: "🍣", description: "깔끔하고 신선한 초밥 세트!" },
+      { name: "규동", category: "일식", emoji: "🍲", description: "달짝지근한 소고기 덮밥 한 그릇!" },
+      { name: "파스타", category: "양식", emoji: "🍝", description: "기분 전환이 필요할 땐 맛있는 파스타!" },
+      { name: "햄버거", category: "양식", emoji: "🍔", description: "간편하면서도 맛있게 즐기는 한 끼!" },
+      { name: "피자", category: "양식", emoji: "🍕", description: "치즈 가득 갓 구운 따끈한 피자!" },
+      { name: "스테이크", category: "양식", emoji: "🥩", description: "육즙 가득 풍성한 특별 점심!" }
     ];
 
     const categoryButtons = document.querySelectorAll(".category-button");
@@ -290,16 +116,23 @@
     const menuDescription = document.getElementById("menuDescription");
     const drawButton = document.getElementById("drawButton");
 
-    let selectedCategory = null;
+    let selectedCategories = [];
     let currentMenu = null;
     let isDrawing = false;
 
     function getCandidates() {
-      if (selectedCategory === null) {
-        return menus;
-      }
+      if (selectedCategories.length === 0) return menus;
+      return menus.filter(menu => selectedCategories.includes(menu.category));
+    }
 
-      return menus.filter(menu => menu.category === selectedCategory);
+    function updateCategoryUI() {
+      if (selectedCategories.length === 0) {
+        menuCategory.textContent = "전체 추천 모드";
+        menuDescription.textContent = "모든 카테고리(총 16개 메뉴)에서 추천됩니다.";
+      } else {
+        menuCategory.textContent = selectedCategories.join(" · ") + " 추천 모드";
+        menuDescription.textContent = `선택한 ${selectedCategories.join(", ")} 메뉴 중에서 추천됩니다.`;
+      }
     }
 
     function showMenu(menu) {
@@ -315,14 +148,11 @@
       const candidates = getCandidates();
       let availableMenus = candidates;
 
-      // 다시 뽑을 때는 직전 메뉴와 다른 메뉴를 우선 선택합니다.
       if (currentMenu && candidates.length > 1) {
         availableMenus = candidates.filter(menu => menu.name !== currentMenu.name);
       }
 
-      const finalMenu = availableMenus[
-        Math.floor(Math.random() * availableMenus.length)
-      ];
+      const finalMenu = availableMenus[Math.floor(Math.random() * availableMenus.length)];
 
       isDrawing = true;
       drawButton.disabled = true;
@@ -334,10 +164,7 @@
       let elapsed = 0;
 
       const timer = setInterval(() => {
-        const randomMenu = candidates[
-          Math.floor(Math.random() * candidates.length)
-        ];
-
+        const randomMenu = candidates[Math.floor(Math.random() * candidates.length)];
         showMenu(randomMenu);
         elapsed += animationInterval;
 
@@ -357,18 +184,22 @@
       button.addEventListener("click", () => {
         if (isDrawing) return;
 
-        selectedCategory = button.dataset.category;
+        const cat = button.dataset.category;
+        const index = selectedCategories.indexOf(cat);
 
-        categoryButtons.forEach(item => {
-          item.classList.toggle("active", item === button);
-        });
+        if (index > -1) {
+          selectedCategories.splice(index, 1);
+          button.classList.remove("active");
+        } else {
+          selectedCategories.push(cat);
+          button.classList.add("active");
+        }
 
         currentMenu = null;
         menuEmoji.textContent = "🍽️";
-        menuCategory.textContent = "오늘의 추천 메뉴";
         menuName.textContent = "메뉴를 뽑아보세요!";
-        menuDescription.textContent = "어떤 메뉴가 나올지 기대해 보세요.";
         drawButton.textContent = "메뉴 뽑기!";
+        updateCategoryUI();
       });
     });
 
