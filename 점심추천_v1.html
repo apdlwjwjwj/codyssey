@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>오늘 뭐 먹지? - 점심 메뉴 추천</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 32px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f7f5f0;
+      color: #292820;
+      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
+        "Malgun Gothic", sans-serif;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 560px;
+      text-align: center;
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      color: #d97736;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 2px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(28px, 7vw, 38px);
+      font-weight: 800;
+      letter-spacing: -1.5px;
+    }
+
+    .subtitle {
+      margin: 12px 0 30px;
+      color: #858176;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    .category-list {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 9px;
+      margin-bottom: 22px;
+    }
+
+    .category-button {
+      min-width: 0;
+      padding: 12px 5px;
+      border: 1px solid #e7e2d8;
+      border-radius: 13px;
+      background: #fff;
+      color: #69665e;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+    }
+
+    .category-button:hover {
+      border-color: #e7a36f;
+    }
+
+    .category-button.active {
+      border-color: #d97736;
+      background: #d97736;
+      color: #fff;
+    }
+
+    .menu-card {
+      min-height: 270px;
+      padding: 34px 20px 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #eee8dd;
+      border-radius: 24px;
+      background: #fff;
+      box-shadow: 0 12px 35px rgba(69, 54, 30, 0.07);
+    }
+
+    .menu-emoji {
+      margin-bottom: 14px;
+      font-size: 66px;
+      line-height: 1.2;
+    }
+
+    .menu-category {
+      margin-bottom: 8px;
+      color: #d97736;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .menu-name {
+      margin: 0;
+      font-size: clamp(27px, 7vw, 34px);
+      font-weight: 800;
+      letter-spacing: -1px;
+      word-break: keep-all;
+    }
+
+    .menu-description {
+      min-height: 24px;
+      margin: 13px 0 0;
+      color: #77736a;
+      font-size: 14px;
+      line-height: 1.6;
+      word-break: keep-all;
+    }
+
+    .draw-button {
+      width: 100%;
+      margin-top: 22px;
+      padding: 17px 20px;
+      border: 0;
+      border-radius: 15px;
+      background: #292820;
+      color: #fff;
+      font: inherit;
+      font-size: 17px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .draw-button:hover {
+      background: #454236;
+      transform: translateY(-2px);
+    }
+
+    .draw-button:active {
+      transform: translateY(0);
+    }
+
+    .draw-button:disabled {
+      cursor: default;
+      opacity: 0.75;
+      transform: none;
+    }
+
+    .menu-card.rolling .menu-emoji {
+      animation: bounce 0.16s ease-in-out infinite alternate;
+    }
+
+    .menu-card.rolling .menu-name {
+      animation: fade 0.16s ease-in-out infinite alternate;
+    }
+
+    @keyframes bounce {
+      from { transform: translateY(0) rotate(-4deg); }
+      to { transform: translateY(-7px) rotate(4deg); }
+    }
+
+    @keyframes fade {
+      from { opacity: 0.55; }
+      to { opacity: 1; }
+    }
+
+    @media (max-width: 420px) {
+      body {
+        padding: 24px 14px;
+      }
+
+      .subtitle {
+        margin-bottom: 24px;
+        font-size: 14px;
+      }
+
+      .category-list {
+        gap: 7px;
+      }
+
+      .category-button {
+        padding: 11px 3px;
+        font-size: 13px;
+      }
+
+      .menu-card {
+        min-height: 250px;
+        padding: 28px 14px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <p class="eyebrow">LUNCH TIME</p>
+    <h1>오늘의 점심 추천 🍽️</h1>
+    <p class="subtitle">오늘 점심은 뭘 먹을까?<br>버튼을 눌러 메뉴를 골라보세요!</p>
+
+    <section class="category-list" aria-label="메뉴 카테고리">
+      <button class="category-button" type="button" data-category="한식">한식</button>
+      <button class="category-button" type="button" data-category="중식">중식</button>
+      <button class="category-button" type="button" data-category="일식">일식</button>
+      <button class="category-button" type="button" data-category="양식">양식</button>
+    </section>
+
+    <section class="menu-card" id="menuCard" aria-live="polite">
+      <div class="menu-emoji" id="menuEmoji">🍽️</div>
+      <div class="menu-category" id="menuCategory">오늘의 추천 메뉴</div>
+      <h2 class="menu-name" id="menuName">메뉴를 뽑아보세요!</h2>
+      <p class="menu-description" id="menuDescription">어떤 메뉴가 나올지 기대해 보세요.</p>
+    </section>
+
+    <button class="draw-button" id="drawButton" type="button">메뉴 뽑기!</button>
+  </main>
+
+  <script>
+    const menus = [
+      {
+        name: "김치찌개",
+        category: "한식",
+        emoji: "🍲",
+        description: "비 오는 날엔 얼큰한 김치찌개!"
+      },
+      {
+        name: "제육볶음",
+        category: "한식",
+        emoji: "🥘",
+        description: "매콤달콤한 양념으로 든든하게!"
+      },
+      {
+        name: "짜장면",
+        category: "중식",
+        emoji: "🍜",
+        description: "달콤한 짜장 소스에 면을 비벼 한입!"
+      },
+      {
+        name: "짬뽕",
+        category: "중식",
+        emoji: "🍜",
+        description: "얼큰하고 시원한 국물이 당기는 날!"
+      },
+      {
+        name: "돈가스",
+        category: "일식",
+        emoji: "🍱",
+        description: "바삭하게 튀긴 돈가스로 든든한 한 끼!"
+      },
+      {
+        name: "라멘",
+        category: "일식",
+        emoji: "🍥",
+        description: "진한 국물과 쫄깃한 면발의 조화!"
+      },
+      {
+        name: "파스타",
+        category: "양식",
+        emoji: "🍝",
+        description: "기분 전환이 필요할 땐 맛있는 파스타!"
+      },
+      {
+        name: "햄버거",
+        category: "양식",
+        emoji: "🍔",
+        description: "간편하면서도 맛있게 즐기는 한 끼!"
+      }
+    ];
+
+    const categoryButtons = document.querySelectorAll(".category-button");
+    const menuCard = document.getElementById("menuCard");
+    const menuEmoji = document.getElementById("menuEmoji");
+    const menuCategory = document.getElementById("menuCategory");
+    const menuName = document.getElementById("menuName");
+    const menuDescription = document.getElementById("menuDescription");
+    const drawButton = document.getElementById("drawButton");
+
+    let selectedCategory = null;
+    let currentMenu = null;
+    let isDrawing = false;
+
+    function getCandidates() {
+      if (selectedCategory === null) {
+        return menus;
+      }
+
+      return menus.filter(menu => menu.category === selectedCategory);
+    }
+
+    function showMenu(menu) {
+      menuEmoji.textContent = menu.emoji;
+      menuCategory.textContent = menu.category;
+      menuName.textContent = menu.name;
+      menuDescription.textContent = menu.description;
+    }
+
+    function drawMenu() {
+      if (isDrawing) return;
+
+      const candidates = getCandidates();
+      let availableMenus = candidates;
+
+      // 다시 뽑을 때는 직전 메뉴와 다른 메뉴를 우선 선택합니다.
+      if (currentMenu && candidates.length > 1) {
+        availableMenus = candidates.filter(menu => menu.name !== currentMenu.name);
+      }
+
+      const finalMenu = availableMenus[
+        Math.floor(Math.random() * availableMenus.length)
+      ];
+
+      isDrawing = true;
+      drawButton.disabled = true;
+      drawButton.textContent = "메뉴 고르는 중...";
+      menuCard.classList.add("rolling");
+
+      const animationDuration = 1000;
+      const animationInterval = 100;
+      let elapsed = 0;
+
+      const timer = setInterval(() => {
+        const randomMenu = candidates[
+          Math.floor(Math.random() * candidates.length)
+        ];
+
+        showMenu(randomMenu);
+        elapsed += animationInterval;
+
+        if (elapsed >= animationDuration) {
+          clearInterval(timer);
+          currentMenu = finalMenu;
+          showMenu(finalMenu);
+          menuCard.classList.remove("rolling");
+          isDrawing = false;
+          drawButton.disabled = false;
+          drawButton.textContent = "다시 뽑기";
+        }
+      }, animationInterval);
+    }
+
+    categoryButtons.forEach(button => {
+      button.addEventListener("click", () => {
+        if (isDrawing) return;
+
+        selectedCategory = button.dataset.category;
+
+        categoryButtons.forEach(item => {
+          item.classList.toggle("active", item === button);
+        });
+
+        currentMenu = null;
+        menuEmoji.textContent = "🍽️";
+        menuCategory.textContent = "오늘의 추천 메뉴";
+        menuName.textContent = "메뉴를 뽑아보세요!";
+        menuDescription.textContent = "어떤 메뉴가 나올지 기대해 보세요.";
+        drawButton.textContent = "메뉴 뽑기!";
+      });
+    });
+
+    drawButton.addEventListener("click", drawMenu);
+  </script>
+</body>
+</html>
