@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>오늘 뭐 먹지? 점심 메뉴 추천기</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+      background-color: #f5f6f8;
+      color: #333333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 16px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 420px;
+      background-color: #ffffff;
+      border-radius: 20px;
+      padding: 24px 20px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      color: #1f2937;
+    }
+
+    .category-group {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+
+    .category-btn {
+      flex: 1;
+      padding: 10px 0;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      background-color: #f9fafb;
+      color: #4b5563;
+      cursor: pointer;
+      transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+    }
+
+    .category-btn.active {
+      background-color: #2563eb;
+      color: #ffffff;
+      border-color: #2563eb;
+    }
+
+    .card {
+      background-color: #f8fafc;
+      border: 2px dashed #cbd5e1;
+      border-radius: 16px;
+      padding: 32px 16px;
+      min-height: 200px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .menu-emoji {
+      font-size: 3.5rem;
+      margin-bottom: 12px;
+      line-height: 1;
+    }
+
+    .menu-name {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #111827;
+      margin-bottom: 8px;
+    }
+
+    .menu-desc {
+      font-size: 0.9rem;
+      color: #6b7280;
+      min-height: 1.2rem;
+      word-break: keep-all;
+    }
+
+    .action-btn {
+      width: 100%;
+      padding: 14px 0;
+      font-size: 1.05rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 12px;
+      background-color: #2563eb;
+      color: #ffffff;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .action-btn:active {
+      background-color: #1d4ed8;
+    }
+
+    .action-btn:disabled {
+      background-color: #93c5fd;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>오늘의 점심 추천</h1>
+
+    <!-- 카테고리 선택 버튼 -->
+    <div class="category-group">
+      <button type="button" class="category-btn active" data-category="한식">한식</button>
+      <button type="button" class="category-btn" data-category="중식">중식</button>
+      <button type="button" class="category-btn" data-category="일식">일식</button>
+      <button type="button" class="category-btn" data-category="양식">양식</button>
+    </div>
+
+    <!-- 메뉴 카드 -->
+    <div class="card">
+      <div class="menu-emoji" id="menuEmoji">🍲</div>
+      <div class="menu-name" id="menuName">메뉴를 뽑아보세요!</div>
+      <div class="menu-desc" id="menuDesc">버튼을 누르면 점심 메뉴가 결정됩니다.</div>
+    </div>
+
+    <!-- 추첨 버튼 -->
+    <button type="button" class="action-btn" id="actionBtn">메뉴 뽑기!</button>
+  </div>
+
+  <script>
+    const MENU_DATA = [
+      { category: "한식", name: "김치찌개", emoji: "🍲", desc: "비 오는 날엔 얼큰한 김치찌개!" },
+      { category: "한식", name: "제육볶음", emoji: "🥩", desc: "매콤달콤 밥도둑 제육볶음!" },
+      { category: "중식", name: "짜장면", emoji: "🥢", desc: "언제 먹어도 든든한 국민 점심 짜장면!" },
+      { category: "중식", name: "짬뽕", emoji: "🍜", desc: "불맛 가득 칼칼하고 시원한 짬뽕!" },
+      { category: "일식", name: "돈가스", emoji: "🍱", desc: "바삭바삭 소리까지 맛있는 돈가스!" },
+      { category: "일식", name: "라멘", emoji: "🍥", desc: "진한 고기 육수가 일품인 일본 라멘!" },
+      { category: "양식", name: "파스타", emoji: "🍝", desc: "풍미 가득 기분 전환되는 파스타!" },
+      { category: "양식", name: "햄버거", emoji: "🍔", desc: "패티 육즙 가득 빠르고 맛있는 햄버거!" }
+    ];
+
+    let currentCategory = "한식";
+    let isDrawing = false;
+    let hasDrawn = false;
+
+    const categoryBtns = document.querySelectorAll(".category-btn");
+    const menuEmojiEl = document.getElementById("menuEmoji");
+    const menuNameEl = document.getElementById("menuName");
+    const menuDescEl = document.getElementById("menuDesc");
+    const actionBtn = document.getElementById("actionBtn");
+
+    // 카테고리 변경 이벤트
+    categoryBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        if (isDrawing) return;
+
+        categoryBtns.forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        currentCategory = btn.dataset.category;
+
+        // 카테고리 변경 시 초기 상태로 복구
+        hasDrawn = false;
+        actionBtn.textContent = "메뉴 뽑기!";
+        menuEmojiEl.textContent = "🍲";
+        menuNameEl.textContent = "메뉴를 뽑아보세요!";
+        menuDescEl.textContent = "버튼을 누르면 점심 메뉴가 결정됩니다.";
+      });
+    });
+
+    // 추첨 실행 로직
+    function drawMenu() {
+      if (isDrawing) return;
+
+      const candidates = MENU_DATA.filter((item) => item.category === currentCategory);
+      isDrawing = true;
+      actionBtn.disabled = true;
+
+      const duration = 1000;
+      const intervalTime = 70;
+      const startTime = Date.now();
+
+      // 1초 동안 카드 내용이 빠르게 전환되는 애니메이션
+      const intervalId = setInterval(() => {
+        const randomIndex = Math.floor(Math.random() * candidates.length);
+        const tempItem = candidates[randomIndex];
+        menuEmojiEl.textContent = tempItem.emoji;
+        menuNameEl.textContent = tempItem.name;
+        menuDescEl.textContent = "";
+
+        if (Date.now() - startTime >= duration) {
+          clearInterval(intervalId);
+
+          // 최종 메뉴 선정
+          const finalIndex = Math.floor(Math.random() * candidates.length);
+          const finalItem = candidates[finalIndex];
+
+          menuEmojiEl.textContent = finalItem.emoji;
+          menuNameEl.textContent = finalItem.name;
+          menuDescEl.textContent = finalItem.desc;
+
+          hasDrawn = true;
+          isDrawing = false;
+          actionBtn.disabled = false;
+          actionBtn.textContent = "다시 뽑기";
+        }
+      }, intervalTime);
+    }
+
+    // 뽑기/다시 뽑기 버튼 이벤트
+    actionBtn.addEventListener("click", () => {
+      drawMenu();
+    });
+  </script>
+</body>
+</html>
